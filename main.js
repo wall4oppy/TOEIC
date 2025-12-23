@@ -904,6 +904,12 @@ function startAllMode() {
   state.perExamTotals = {};
   state.perExamWrongs = {};
   setModeLabel("全部練習");
+  
+  // 顯示快速跳轉Part按鈕
+  if (btnJumpPart) btnJumpPart.classList.remove("hidden");
+  // 隱藏Part選擇器
+  if (partSelector) partSelector.classList.add("hidden");
+  
   showQuestionPanel();
   // 保存新進度
   saveProgress();
