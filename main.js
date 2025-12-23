@@ -649,7 +649,7 @@ function downloadExportData() {
   
   const text = exportTextOutput.value;
   if (!text) {
-    alert("沒有可下載的資料。");
+    showMessage("錯誤", "沒有可下載的資料。");
     return;
   }
 
@@ -663,10 +663,10 @@ function downloadExportData() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    alert("檔案下載成功！");
+    showMessage("下載完成", "檔案下載成功！");
   } catch (e) {
     console.error("下載失敗", e);
-    alert("下載檔案時發生錯誤。");
+    showMessage("錯誤", "下載檔案時發生錯誤。");
   }
 }
 
