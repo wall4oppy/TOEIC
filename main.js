@@ -167,6 +167,9 @@ function showDeleteConfirm(userId) {
   const user = state.users.find((u) => u.id === userId);
   if (!user) return;
   
+  // 先關閉使用者管理彈窗，避免重疊
+  hideUserPanel();
+  
   const deleteOverlay = $("delete-confirm-modal-overlay");
   const deletePanel = $("delete-confirm-panel");
   const deleteMessage = $("delete-confirm-message");
@@ -176,7 +179,9 @@ function showDeleteConfirm(userId) {
   }
   
   // 儲存要刪除的使用者 ID
-  deletePanel.dataset.userIdToDelete = userId;
+  if (deletePanel) {
+    deletePanel.dataset.userIdToDelete = userId;
+  }
   
   if (deleteOverlay) deleteOverlay.classList.remove("hidden");
   if (deletePanel) deletePanel.classList.remove("hidden");
@@ -642,6 +647,9 @@ function downloadExportData() {
 
 // 匯入所有使用者資料（用於跨裝置同步）
 function showImportPanel() {
+  // 先關閉使用者管理彈窗，避免重疊
+  hideUserPanel();
+  
   const importOverlay = $("import-modal-overlay");
   const importPanel = $("import-panel");
   const importTextInput = $("import-text-input");
