@@ -683,11 +683,21 @@ function updateStats() {
 
 function resetPanels() {
   if (questionPanel) questionPanel.classList.add("hidden");
+  
+  // 關閉所有 modal 彈窗和遮罩
+  const summaryOverlay = $("summary-modal-overlay");
+  const analysisOverlay = $("analysis-modal-overlay");
+  const userOverlay = $("user-modal-overlay");
+  
   if (summaryPanel) summaryPanel.classList.add("hidden");
+  if (summaryOverlay) summaryOverlay.classList.add("hidden");
+  if (analysisPanel) analysisPanel.classList.add("hidden");
+  if (analysisOverlay) analysisOverlay.classList.add("hidden");
+  if (userPanel) userPanel.classList.add("hidden");
+  if (userOverlay) userOverlay.classList.add("hidden");
+  
   if (examSelector) examSelector.classList.add("hidden");
   if (feedbackBox) feedbackBox.classList.add("hidden");
-  if (analysisPanel) analysisPanel.classList.add("hidden");
-  if (userPanel) userPanel.classList.add("hidden");
 }
 
 function startAllMode() {
@@ -742,12 +752,20 @@ function showQuestionPanel() {
     return;
   }
   if (questionPanel) questionPanel.classList.remove("hidden");
+  
+  // 隱藏總結彈窗和遮罩
+  const summaryOverlay = $("summary-modal-overlay");
+  if (summaryOverlay) summaryOverlay.classList.add("hidden");
   if (summaryPanel) summaryPanel.classList.add("hidden");
+  
   renderCurrentQuestion();
 }
 
 function showSummary(msg) {
   if (questionPanel) questionPanel.classList.add("hidden");
+  
+  const summaryOverlay = $("summary-modal-overlay");
+  if (summaryOverlay) summaryOverlay.classList.remove("hidden");
   if (summaryPanel) summaryPanel.classList.remove("hidden");
   if (summaryText) summaryText.textContent = msg;
 
@@ -875,12 +893,16 @@ function nextQuestion() {
 // 答題分析畫面
 function openAnalysisView() {
   resetPanels();
+  const analysisOverlay = $("analysis-modal-overlay");
+  if (analysisOverlay) analysisOverlay.classList.remove("hidden");
   if (analysisPanel) analysisPanel.classList.remove("hidden");
   renderAnalysis();
 }
 
 function backToSummary() {
   // 關閉分析視窗
+  const analysisOverlay = $("analysis-modal-overlay");
+  if (analysisOverlay) analysisOverlay.classList.add("hidden");
   if (analysisPanel) analysisPanel.classList.add("hidden");
 
   // 如果還有尚未作答完的題目，回到題目視窗
@@ -895,6 +917,8 @@ function backToSummary() {
 
   // 若當前輪已完成，回到總結畫面
   if (state.mode && state.currentSet.length > 0 && state.currentIndex >= state.currentSet.length) {
+    const summaryOverlay = $("summary-modal-overlay");
+    if (summaryOverlay) summaryOverlay.classList.remove("hidden");
     if (summaryPanel) summaryPanel.classList.remove("hidden");
     return;
   }
@@ -1239,10 +1263,62 @@ function bindEvents() {
     });
   }
 
-  // ESC 鍵關閉彈窗
+  // 總結彈窗關閉按鈕
+  const btnSummaryClose = $("btn-summary-close");
+  if (btnSummaryClose) {
+    btnSummaryClose.addEventListener("click", () => {
+      const summaryOverlay = $("summary-modal-overlay");
+      if (summaryOverlay) summaryOverlay.classList.add("hidden");
+      if (summaryPanel) summaryPanel.classList.add("hidden");
+      // 如果還有題目未完成，回到題目畫面
+      if (state.mode && state.currentSet.length > 0 && state.currentIndex < state.currentSet.length) {
+        if (questionPanel) {
+          questionPanel.classList.remove("hidden");
+          renderCurrentQuestion();
+        }
+      }
+    });
+  }
+
+  // 分析彈窗關閉按鈕
+  const btnAnalysisClose = $("btn-analysis-close");
+  if (btnAnalysisClose) {
+    btnAnalysisClose.addEventListener("click", () => {
+      backToSummary();
+    });
+  }
+
+  // 點擊背景遮罩關閉總結彈窗
+  const summaryOverlay = $("summary-modal-overlay");
+  if (summaryOverlay) {
+    summaryOverlay.addEventListener("click", (e) => {
+      if (e.target === summaryOverlay) {
+        btnSummaryClose?.click();
+      }
+    });
+  }
+
+  // 點擊背景遮罩關閉分析彈窗
+  const analysisOverlay = $("analysis-modal-overlay");
+  if (analysisOverlay) {
+    analysisOverlay.addEventListener("click", (e) => {
+      if (e.target === analysisOverlay) {
+        btnAnalysisClose?.click();
+      }
+    });
+  }
+
+  // ESC 鍵關閉彈窗（支援所有彈窗）
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && userPanel && !userPanel.classList.contains("hidden")) {
-      hideUserPanel();
+    if (e.key === "Escape") {
+      // 優先關閉最上層的彈窗
+      if (analysisPanel && !analysisPanel.classList.contains("hidden")) {
+        btnAnalysisClose?.click();
+      } else if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
+        btnSummaryClose?.click();
+      } else if (userPanel && !userPanel.classList.contains("hidden")) {
+        hideUserPanel();
+      }
     }
   });
 
