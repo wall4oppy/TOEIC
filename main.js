@@ -686,13 +686,11 @@ function resetPanels() {
   
   // 關閉所有 modal 彈窗和遮罩
   const summaryOverlay = $("summary-modal-overlay");
-  const analysisOverlay = $("analysis-modal-overlay");
   const userOverlay = $("user-modal-overlay");
   
   if (summaryPanel) summaryPanel.classList.add("hidden");
   if (summaryOverlay) summaryOverlay.classList.add("hidden");
   if (analysisPanel) analysisPanel.classList.add("hidden");
-  if (analysisOverlay) analysisOverlay.classList.add("hidden");
   if (userPanel) userPanel.classList.add("hidden");
   if (userOverlay) userOverlay.classList.add("hidden");
   
@@ -893,16 +891,12 @@ function nextQuestion() {
 // 答題分析畫面
 function openAnalysisView() {
   resetPanels();
-  const analysisOverlay = $("analysis-modal-overlay");
-  if (analysisOverlay) analysisOverlay.classList.remove("hidden");
   if (analysisPanel) analysisPanel.classList.remove("hidden");
   renderAnalysis();
 }
 
 function backToSummary() {
   // 關閉分析視窗
-  const analysisOverlay = $("analysis-modal-overlay");
-  if (analysisOverlay) analysisOverlay.classList.add("hidden");
   if (analysisPanel) analysisPanel.classList.add("hidden");
 
   // 如果還有尚未作答完的題目，回到題目視窗
@@ -1280,14 +1274,6 @@ function bindEvents() {
     });
   }
 
-  // 分析彈窗關閉按鈕
-  const btnAnalysisClose = $("btn-analysis-close");
-  if (btnAnalysisClose) {
-    btnAnalysisClose.addEventListener("click", () => {
-      backToSummary();
-    });
-  }
-
   // 點擊背景遮罩關閉總結彈窗
   const summaryOverlay = $("summary-modal-overlay");
   if (summaryOverlay) {
@@ -1298,23 +1284,11 @@ function bindEvents() {
     });
   }
 
-  // 點擊背景遮罩關閉分析彈窗
-  const analysisOverlay = $("analysis-modal-overlay");
-  if (analysisOverlay) {
-    analysisOverlay.addEventListener("click", (e) => {
-      if (e.target === analysisOverlay) {
-        btnAnalysisClose?.click();
-      }
-    });
-  }
-
-  // ESC 鍵關閉彈窗（支援所有彈窗）
+  // ESC 鍵關閉彈窗（支援總結和使用者彈窗）
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       // 優先關閉最上層的彈窗
-      if (analysisPanel && !analysisPanel.classList.contains("hidden")) {
-        btnAnalysisClose?.click();
-      } else if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
+      if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
         btnSummaryClose?.click();
       } else if (userPanel && !userPanel.classList.contains("hidden")) {
         hideUserPanel();
