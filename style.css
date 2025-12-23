@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "San Francisco Text Bold";
+  src: url("SanFranciscoText-Bold-11.otf") format("opentype");
+  font-weight: bold;
+  font-style: normal;
+}
+
 *,
 *::before,
 *::after {
@@ -96,6 +103,14 @@ a:active {
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.title-toeic {
+  font-family: "San Francisco Text Bold", "Arial Black", Impact, Haettenschweiler, sans-serif;
+}
+
+#question-label {
+  font-family: "San Francisco Text Bold", "Arial Black", Impact, Haettenschweiler, sans-serif;
 }
 
 .window-subtitle {
