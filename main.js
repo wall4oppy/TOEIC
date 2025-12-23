@@ -857,6 +857,7 @@ function resetPanels() {
   hideImportPanel();
   hideExportPanel();
   hideDeleteConfirm();
+  hideImportConfirm();
   
   if (examSelector) examSelector.classList.add("hidden");
   if (feedbackBox) feedbackBox.classList.add("hidden");
@@ -1660,18 +1661,33 @@ function bindEvents() {
     });
   }
 
-  // ESC 鍵關閉彈窗（支援所有彈窗）
+  // ESC 鍵關閉彈窗（支援所有彈窗，優先關閉最上層的彈窗）
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      // 優先關閉最上層的彈窗
       const importPanel = $("import-panel");
       const exportPanel = $("export-panel");
-      if (importPanel && !importPanel.classList.contains("hidden")) {
+      const importConfirmPanel = $("import-confirm-panel");
+      const deleteConfirmPanel = $("delete-confirm-panel");
+      const summaryPanel = $("summary-panel");
+      const userPanel = $("user-panel");
+      
+      // 按 z-index 從高到低關閉（功能彈窗 > 基礎彈窗）
+      if (importConfirmPanel && !importConfirmPanel.classList.contains("hidden")) {
+        hideImportConfirm();
+        // 關閉後重新顯示匯入彈窗
+        showImportPanel();
+      } else if (importPanel && !importPanel.classList.contains("hidden")) {
         hideImportPanel();
+        // 如果是從使用者管理彈窗打開的，關閉後重新顯示使用者管理彈窗
+        showUserPanel();
       } else if (exportPanel && !exportPanel.classList.contains("hidden")) {
         hideExportPanel();
+        // 如果是從使用者管理彈窗打開的，關閉後重新顯示使用者管理彈窗
+        showUserPanel();
       } else if (deleteConfirmPanel && !deleteConfirmPanel.classList.contains("hidden")) {
         hideDeleteConfirm();
+        // 如果是從使用者管理彈窗打開的，關閉後重新顯示使用者管理彈窗
+        showUserPanel();
       } else if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
         btnSummaryClose?.click();
       } else if (userPanel && !userPanel.classList.contains("hidden")) {
