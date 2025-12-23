@@ -89,6 +89,10 @@ a:active {
 }
 
 .title-logo {
+  margin-left: 4px;
+}
+
+.title-logo {
   width: auto;
   height: 13px;
   display: block;
