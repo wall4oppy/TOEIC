@@ -263,9 +263,9 @@ function switchUser(userId) {
 function updateUserDisplay() {
   const user = state.users.find((u) => u.id === state.currentUserId);
   if (user) {
-    currentUserDisplay.textContent = `使用者：${user.name}`;
+    currentUserDisplay.textContent = `使用者: ${user.name}`;
   } else {
-    currentUserDisplay.textContent = "使用者：—";
+    currentUserDisplay.textContent = "使用者: —";
   }
 }
 
