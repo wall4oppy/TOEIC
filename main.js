@@ -1466,6 +1466,8 @@ function bindEvents() {
   if (btnImportCancel) {
     btnImportCancel.addEventListener("click", () => {
       hideImportPanel();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
     });
   }
 
@@ -1473,6 +1475,8 @@ function bindEvents() {
   if (btnImportClose) {
     btnImportClose.addEventListener("click", () => {
       hideImportPanel();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
     });
   }
 
@@ -1481,6 +1485,8 @@ function bindEvents() {
     importOverlay.addEventListener("click", (e) => {
       if (e.target === importOverlay) {
         hideImportPanel();
+        // 關閉後重新顯示使用者管理彈窗
+        showUserPanel();
       }
     });
   }
@@ -1551,6 +1557,7 @@ function bindEvents() {
       const userIdToDelete = deleteConfirmPanel?.dataset.userIdToDelete;
       if (userIdToDelete) {
         deleteUser(userIdToDelete);
+        // 刪除後自動顯示使用者管理彈窗（已在 deleteUser 中處理）
       }
     });
   }
@@ -1558,12 +1565,16 @@ function bindEvents() {
   if (btnDeleteConfirmCancel) {
     btnDeleteConfirmCancel.addEventListener("click", () => {
       hideDeleteConfirm();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
     });
   }
 
   if (btnDeleteConfirmClose) {
     btnDeleteConfirmClose.addEventListener("click", () => {
       hideDeleteConfirm();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
     });
   }
 
@@ -1572,6 +1583,8 @@ function bindEvents() {
     deleteConfirmOverlay.addEventListener("click", (e) => {
       if (e.target === deleteConfirmOverlay) {
         hideDeleteConfirm();
+        // 關閉後重新顯示使用者管理彈窗
+        showUserPanel();
       }
     });
   }
