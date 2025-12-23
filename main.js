@@ -197,6 +197,9 @@ function hideDeleteConfirm() {
 
 // 顯示訊息彈窗（通用）
 function showMessage(title, text) {
+  // 先關閉使用者管理彈窗，避免重疊
+  hideUserPanel();
+  
   const messageOverlay = $("message-modal-overlay");
   const messagePanel = $("message-panel");
   const messageTitle = $("message-title");
@@ -796,11 +799,10 @@ function importAllData(inputText) {
     updateUserDisplay();
     renderUserList();
 
-    // 關閉匯入彈窗，重新顯示使用者管理彈窗
+    // 關閉匯入彈窗，先不顯示使用者管理彈窗
     hideImportPanel();
-    showUserPanel();
 
-    // 顯示成功訊息
+    // 顯示成功訊息（訊息彈窗會自動顯示在最上層）
     showMessage("匯入完成", "匯入完成！可以在任何裝置上用相同方式匯出/匯入來同步資料。");
   } catch (e) {
     console.error("匯入資料失敗", e);
@@ -1597,6 +1599,39 @@ function bindEvents() {
     });
   }
 
+  // 訊息彈窗相關事件
+  const messagePanel = $("message-panel");
+  const btnMessageOk = $("btn-message-ok");
+  const btnMessageClose = $("btn-message-close");
+  const messageOverlay = $("message-modal-overlay");
+
+  if (btnMessageOk) {
+    btnMessageOk.addEventListener("click", () => {
+      hideMessage();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
+    });
+  }
+
+  if (btnMessageClose) {
+    btnMessageClose.addEventListener("click", () => {
+      hideMessage();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
+    });
+  }
+
+  // 點擊背景遮罩關閉訊息彈窗
+  if (messageOverlay) {
+    messageOverlay.addEventListener("click", (e) => {
+      if (e.target === messageOverlay) {
+        hideMessage();
+        // 關閉後重新顯示使用者管理彈窗
+        showUserPanel();
+      }
+    });
+  }
+
   // 匯入確認彈窗相關事件
   const importConfirmPanel = $("import-confirm-panel");
   const btnImportConfirmOk = $("btn-import-confirm-ok");
@@ -1699,6 +1734,8 @@ function bindEvents() {
       // 按 z-index 從高到低關閉（功能彈窗 > 基礎彈窗）
       if (messagePanel && !messagePanel.classList.contains("hidden")) {
         hideMessage();
+        // 關閉後重新顯示使用者管理彈窗
+        showUserPanel();
       } else if (importConfirmPanel && !importConfirmPanel.classList.contains("hidden")) {
         hideImportConfirm();
         // 關閉後重新顯示匯入彈窗
