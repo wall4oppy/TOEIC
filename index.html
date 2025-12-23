@@ -180,6 +180,26 @@
         </div>
       </div>
 
+      <!-- 匯入確認彈窗（復古遊戲風格） -->
+      <div id="import-confirm-modal-overlay" class="modal-overlay hidden"></div>
+      <div id="import-confirm-panel" class="modal-dialog hidden">
+        <div class="modal-titlebar">
+          <span class="modal-title">⚠️ 確認匯入</span>
+          <button id="btn-import-confirm-close" class="modal-close-btn" aria-label="關閉">✕</button>
+        </div>
+        <div class="modal-content">
+          <div class="modal-section">
+            <div id="import-confirm-message" class="delete-confirm-message">
+              匯入資料會覆蓋目前瀏覽器中的所有使用者與學習記錄，確定要繼續嗎？
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-import-confirm-ok" class="btn btn-danger">確定匯入</button>
+          <button id="btn-import-confirm-cancel" class="btn">取消</button>
+        </div>
+      </div>
+
       <!-- 刪除使用者確認彈窗（復古遊戲風格） -->
       <div id="delete-confirm-modal-overlay" class="modal-overlay hidden"></div>
       <div id="delete-confirm-panel" class="modal-dialog hidden">

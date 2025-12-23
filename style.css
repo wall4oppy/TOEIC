@@ -536,16 +536,18 @@ a:active {
   animation: modalAppear 0.15s ease-out;
 }
 
-/* 功能彈窗（匯入、匯出、刪除確認）應該在最上層 */
+/* 功能彈窗（匯入、匯出、刪除確認、匯入確認）應該在最上層 */
 #import-panel,
 #export-panel,
-#delete-confirm-panel {
+#delete-confirm-panel,
+#import-confirm-panel {
   z-index: 10000;
 }
 
 #import-modal-overlay,
 #export-modal-overlay,
-#delete-confirm-modal-overlay {
+#delete-confirm-modal-overlay,
+#import-confirm-modal-overlay {
   z-index: 9999;
 }
 

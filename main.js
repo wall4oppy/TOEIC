@@ -675,6 +675,32 @@ function hideImportPanel() {
   if (importPanel) importPanel.classList.add("hidden");
 }
 
+// 顯示匯入確認彈窗
+function showImportConfirm(inputText) {
+  // 先關閉匯入彈窗
+  hideImportPanel();
+  
+  const importConfirmOverlay = $("import-confirm-modal-overlay");
+  const importConfirmPanel = $("import-confirm-panel");
+  
+  // 儲存要匯入的資料
+  if (importConfirmPanel) {
+    importConfirmPanel.dataset.importData = inputText;
+  }
+  
+  if (importConfirmOverlay) importConfirmOverlay.classList.remove("hidden");
+  if (importConfirmPanel) importConfirmPanel.classList.remove("hidden");
+}
+
+// 隱藏匯入確認彈窗
+function hideImportConfirm() {
+  const importConfirmOverlay = $("import-confirm-modal-overlay");
+  const importConfirmPanel = $("import-confirm-panel");
+  if (importConfirmOverlay) importConfirmOverlay.classList.add("hidden");
+  if (importConfirmPanel) importConfirmPanel.classList.add("hidden");
+}
+
+// 執行匯入資料
 function importAllData(inputText) {
   try {
     if (!inputText || !inputText.trim()) {
@@ -692,14 +718,6 @@ function importAllData(inputText) {
 
     if (!snapshot || !Array.isArray(snapshot.users) || !snapshot.data) {
       alert("資料內容不完整，無法匯入。");
-      return;
-    }
-
-    if (
-      !window.confirm(
-        "匯入資料會覆蓋目前瀏覽器中的所有使用者與學習記錄，確定要繼續嗎？"
-      )
-    ) {
       return;
     }
 
@@ -1550,6 +1568,50 @@ function bindEvents() {
     summaryOverlay.addEventListener("click", (e) => {
       if (e.target === summaryOverlay) {
         btnSummaryClose?.click();
+      }
+    });
+  }
+
+  // 匯入確認彈窗相關事件
+  const importConfirmPanel = $("import-confirm-panel");
+  const btnImportConfirmOk = $("btn-import-confirm-ok");
+  const btnImportConfirmCancel = $("btn-import-confirm-cancel");
+  const btnImportConfirmClose = $("btn-import-confirm-close");
+  const importConfirmOverlay = $("import-confirm-modal-overlay");
+
+  if (btnImportConfirmOk) {
+    btnImportConfirmOk.addEventListener("click", () => {
+      const importData = importConfirmPanel?.dataset.importData;
+      if (importData) {
+        hideImportConfirm();
+        importAllData(importData);
+      }
+    });
+  }
+
+  if (btnImportConfirmCancel) {
+    btnImportConfirmCancel.addEventListener("click", () => {
+      hideImportConfirm();
+      // 關閉後重新顯示匯入彈窗
+      showImportPanel();
+    });
+  }
+
+  if (btnImportConfirmClose) {
+    btnImportConfirmClose.addEventListener("click", () => {
+      hideImportConfirm();
+      // 關閉後重新顯示匯入彈窗
+      showImportPanel();
+    });
+  }
+
+  // 點擊背景遮罩關閉匯入確認彈窗
+  if (importConfirmOverlay) {
+    importConfirmOverlay.addEventListener("click", (e) => {
+      if (e.target === importConfirmOverlay) {
+        hideImportConfirm();
+        // 關閉後重新顯示匯入彈窗
+        showImportPanel();
       }
     });
   }
