@@ -1531,6 +1531,43 @@ function bindEvents() {
     });
   }
 
+  // 刪除確認彈窗相關事件
+  const deleteConfirmPanel = $("delete-confirm-panel");
+  const btnDeleteConfirmOk = $("btn-delete-confirm-ok");
+  const btnDeleteConfirmCancel = $("btn-delete-confirm-cancel");
+  const btnDeleteConfirmClose = $("btn-delete-confirm-close");
+  const deleteConfirmOverlay = $("delete-confirm-modal-overlay");
+
+  if (btnDeleteConfirmOk) {
+    btnDeleteConfirmOk.addEventListener("click", () => {
+      const userIdToDelete = deleteConfirmPanel?.dataset.userIdToDelete;
+      if (userIdToDelete) {
+        deleteUser(userIdToDelete);
+      }
+    });
+  }
+
+  if (btnDeleteConfirmCancel) {
+    btnDeleteConfirmCancel.addEventListener("click", () => {
+      hideDeleteConfirm();
+    });
+  }
+
+  if (btnDeleteConfirmClose) {
+    btnDeleteConfirmClose.addEventListener("click", () => {
+      hideDeleteConfirm();
+    });
+  }
+
+  // 點擊背景遮罩關閉刪除確認彈窗
+  if (deleteConfirmOverlay) {
+    deleteConfirmOverlay.addEventListener("click", (e) => {
+      if (e.target === deleteConfirmOverlay) {
+        hideDeleteConfirm();
+      }
+    });
+  }
+
   // ESC 鍵關閉彈窗（支援所有彈窗）
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -1541,6 +1578,8 @@ function bindEvents() {
         hideImportPanel();
       } else if (exportPanel && !exportPanel.classList.contains("hidden")) {
         hideExportPanel();
+      } else if (deleteConfirmPanel && !deleteConfirmPanel.classList.contains("hidden")) {
+        hideDeleteConfirm();
       } else if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
         btnSummaryClose?.click();
       } else if (userPanel && !userPanel.classList.contains("hidden")) {
