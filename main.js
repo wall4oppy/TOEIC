@@ -1418,6 +1418,8 @@ function bindEvents() {
       state.currentIndex = 0;
       state.wrongQuestions = [];
       if (examSelector) examSelector.classList.add("hidden");
+      // 顯示快速跳轉Part按鈕
+      if (btnJumpPart) btnJumpPart.classList.remove("hidden");
       showQuestionPanel();
     });
   }
