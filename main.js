@@ -755,7 +755,10 @@ function importAllData(inputText) {
     }
     updateUserDisplay();
     renderUserList();
-    resetPanels();
+
+    // 關閉匯入彈窗，重新顯示使用者管理彈窗
+    hideImportPanel();
+    showUserPanel();
 
     alert("匯入完成！可以在任何裝置上用相同方式匯出/匯入來同步資料。");
   } catch (e) {
