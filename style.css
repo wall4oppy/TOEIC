@@ -786,6 +786,25 @@ a:active {
   min-width: 200px;
 }
 
+.text-area-input[readonly] {
+  background: #f0f0f0;
+  cursor: text;
+}
+
+.export-tips {
+  padding: 8px;
+  background: #ffffcc;
+  border: 2px inset;
+  border-color: #808080 #ffffff #ffffff #808080;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.export-tips p {
+  margin: 4px 0;
+  color: #000000;
+}
+
 /* ==== Responsive ==== */
 
 @media (max-width: 640px) {

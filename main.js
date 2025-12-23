@@ -468,7 +468,7 @@ function getModeLabelText(mode) {
 }
 
 // 匯出所有使用者資料（用於跨裝置同步）
-function exportAllData() {
+function showExportPanel() {
   try {
     if (!state.users || state.users.length === 0) {
       alert("目前沒有可匯出的使用者資料。");
@@ -517,23 +517,96 @@ function exportAllData() {
 
     const json = JSON.stringify(snapshot);
 
-    // 優先嘗試寫入剪貼簿
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(json)
-        .then(() => {
-          alert("資料已複製到剪貼簿，可貼到手機或其他裝置。");
-        })
-        .catch(() => {
-          // 失敗則用 prompt 讓使用者手動複製
-          window.prompt("請手動複製以下資料，貼到手機或其他裝置：", json);
-        });
-    } else {
-      window.prompt("請手動複製以下資料，貼到手機或其他裝置：", json);
+    // 顯示彈窗並填入資料
+    const exportOverlay = $("export-modal-overlay");
+    const exportPanel = $("export-panel");
+    const exportTextOutput = $("export-text-output");
+    
+    if (exportOverlay) exportOverlay.classList.remove("hidden");
+    if (exportPanel) exportPanel.classList.remove("hidden");
+    if (exportTextOutput) {
+      exportTextOutput.value = json;
+      // 自動選取所有文字，方便複製
+      setTimeout(() => {
+        exportTextOutput.select();
+      }, 100);
     }
   } catch (e) {
     console.error("匯出資料失敗", e);
     alert("匯出資料時發生錯誤。");
+  }
+}
+
+function hideExportPanel() {
+  const exportOverlay = $("export-modal-overlay");
+  const exportPanel = $("export-panel");
+  if (exportOverlay) exportOverlay.classList.add("hidden");
+  if (exportPanel) exportPanel.classList.add("hidden");
+}
+
+function copyExportData() {
+  const exportTextOutput = $("export-text-output");
+  if (!exportTextOutput) return;
+  
+  const text = exportTextOutput.value;
+  if (!text) {
+    alert("沒有可複製的資料。");
+    return;
+  }
+
+  // 優先嘗試使用剪貼簿 API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("資料已複製到剪貼簿！");
+      })
+      .catch(() => {
+        // 降級方案：使用傳統方法
+        exportTextOutput.select();
+        try {
+          document.execCommand("copy");
+          alert("資料已複製到剪貼簿！");
+        } catch {
+          alert("無法自動複製，請手動選取文字並複製（Ctrl+C）。");
+        }
+      });
+  } else {
+    // 降級方案
+    exportTextOutput.select();
+    try {
+      document.execCommand("copy");
+      alert("資料已複製到剪貼簿！");
+    } catch {
+      alert("無法自動複製，請手動選取文字並複製（Ctrl+C）。");
+    }
+  }
+}
+
+function downloadExportData() {
+  const exportTextOutput = $("export-text-output");
+  if (!exportTextOutput) return;
+  
+  const text = exportTextOutput.value;
+  if (!text) {
+    alert("沒有可下載的資料。");
+    return;
+  }
+
+  try {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `toeic_data_${new Date().toISOString().split("T")[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert("檔案下載成功！");
+  } catch (e) {
+    console.error("下載失敗", e);
+    alert("下載檔案時發生錯誤。");
   }
 }
 
@@ -723,6 +796,7 @@ function resetPanels() {
   if (userPanel) userPanel.classList.add("hidden");
   if (userOverlay) userOverlay.classList.add("hidden");
   hideImportPanel();
+  hideExportPanel();
   
   if (examSelector) examSelector.classList.add("hidden");
   if (feedbackBox) feedbackBox.classList.add("hidden");
@@ -1259,7 +1333,47 @@ function bindEvents() {
   // 匯出 / 匯入資料
   if (btnExportData) {
     btnExportData.addEventListener("click", () => {
-      exportAllData();
+      showExportPanel();
+    });
+  }
+
+  // 匯出彈窗相關事件
+  const btnExportCopy = $("btn-export-copy");
+  const btnExportDownload = $("btn-export-download");
+  const btnExportClose = $("btn-export-close");
+  const btnExportCloseFooter = $("btn-export-close-footer");
+  const exportOverlay = $("export-modal-overlay");
+
+  if (btnExportCopy) {
+    btnExportCopy.addEventListener("click", () => {
+      copyExportData();
+    });
+  }
+
+  if (btnExportDownload) {
+    btnExportDownload.addEventListener("click", () => {
+      downloadExportData();
+    });
+  }
+
+  if (btnExportClose) {
+    btnExportClose.addEventListener("click", () => {
+      hideExportPanel();
+    });
+  }
+
+  if (btnExportCloseFooter) {
+    btnExportCloseFooter.addEventListener("click", () => {
+      hideExportPanel();
+    });
+  }
+
+  // 點擊背景遮罩關閉匯出彈窗
+  if (exportOverlay) {
+    exportOverlay.addEventListener("click", (e) => {
+      if (e.target === exportOverlay) {
+        hideExportPanel();
+      }
     });
   }
 
@@ -1391,8 +1505,11 @@ function bindEvents() {
     if (e.key === "Escape") {
       // 優先關閉最上層的彈窗
       const importPanel = $("import-panel");
+      const exportPanel = $("export-panel");
       if (importPanel && !importPanel.classList.contains("hidden")) {
         hideImportPanel();
+      } else if (exportPanel && !exportPanel.classList.contains("hidden")) {
+        hideExportPanel();
       } else if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
         btnSummaryClose?.click();
       } else if (userPanel && !userPanel.classList.contains("hidden")) {
