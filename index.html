@@ -200,6 +200,23 @@
         </div>
       </div>
 
+      <!-- 訊息提示彈窗（復古遊戲風格） -->
+      <div id="message-modal-overlay" class="modal-overlay hidden"></div>
+      <div id="message-panel" class="modal-dialog hidden">
+        <div class="modal-titlebar">
+          <span class="modal-title" id="message-title">訊息</span>
+          <button id="btn-message-close" class="modal-close-btn" aria-label="關閉">✕</button>
+        </div>
+        <div class="modal-content">
+          <div class="modal-section">
+            <div id="message-text" class="delete-confirm-message"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-message-ok" class="btn btn-primary">確定</button>
+        </div>
+      </div>
+
       <!-- 刪除使用者確認彈窗（復古遊戲風格） -->
       <div id="delete-confirm-modal-overlay" class="modal-overlay hidden"></div>
       <div id="delete-confirm-panel" class="modal-dialog hidden">

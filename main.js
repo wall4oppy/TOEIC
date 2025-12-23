@@ -195,6 +195,28 @@ function hideDeleteConfirm() {
   if (deletePanel) deletePanel.classList.add("hidden");
 }
 
+// 顯示訊息彈窗（通用）
+function showMessage(title, text) {
+  const messageOverlay = $("message-modal-overlay");
+  const messagePanel = $("message-panel");
+  const messageTitle = $("message-title");
+  const messageText = $("message-text");
+  
+  if (messageTitle) messageTitle.textContent = title || "訊息";
+  if (messageText) messageText.textContent = text || "";
+  
+  if (messageOverlay) messageOverlay.classList.remove("hidden");
+  if (messagePanel) messagePanel.classList.remove("hidden");
+}
+
+// 隱藏訊息彈窗
+function hideMessage() {
+  const messageOverlay = $("message-modal-overlay");
+  const messagePanel = $("message-panel");
+  if (messageOverlay) messageOverlay.classList.add("hidden");
+  if (messagePanel) messagePanel.classList.add("hidden");
+}
+
 // 執行刪除使用者
 function deleteUser(userId) {
   // 刪除使用者的所有資料
@@ -778,7 +800,8 @@ function importAllData(inputText) {
     hideImportPanel();
     showUserPanel();
 
-    alert("匯入完成！可以在任何裝置上用相同方式匯出/匯入來同步資料。");
+    // 顯示成功訊息
+    showMessage("✅ 匯入完成", "匯入完成！可以在任何裝置上用相同方式匯出/匯入來同步資料。");
   } catch (e) {
     console.error("匯入資料失敗", e);
     alert("匯入資料時發生錯誤。");
@@ -858,6 +881,7 @@ function resetPanels() {
   hideExportPanel();
   hideDeleteConfirm();
   hideImportConfirm();
+  hideMessage();
   
   if (examSelector) examSelector.classList.add("hidden");
   if (feedbackBox) feedbackBox.classList.add("hidden");
@@ -1668,11 +1692,14 @@ function bindEvents() {
       const exportPanel = $("export-panel");
       const importConfirmPanel = $("import-confirm-panel");
       const deleteConfirmPanel = $("delete-confirm-panel");
+      const messagePanel = $("message-panel");
       const summaryPanel = $("summary-panel");
       const userPanel = $("user-panel");
       
       // 按 z-index 從高到低關閉（功能彈窗 > 基礎彈窗）
-      if (importConfirmPanel && !importConfirmPanel.classList.contains("hidden")) {
+      if (messagePanel && !messagePanel.classList.contains("hidden")) {
+        hideMessage();
+      } else if (importConfirmPanel && !importConfirmPanel.classList.contains("hidden")) {
         hideImportConfirm();
         // 關閉後重新顯示匯入彈窗
         showImportPanel();
