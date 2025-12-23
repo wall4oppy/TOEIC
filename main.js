@@ -890,6 +890,8 @@ function resetPanels() {
   hideMessage();
   
   if (examSelector) examSelector.classList.add("hidden");
+  if (partSelector) partSelector.classList.add("hidden");
+  if (btnJumpPart) btnJumpPart.classList.add("hidden");
   if (feedbackBox) feedbackBox.classList.add("hidden");
 }
 
