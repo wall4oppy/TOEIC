@@ -859,9 +859,6 @@ a:active {
     padding: 6px;
   }
 
-  .control-panel {
-    flex-direction: column;
-  }
 
   .stats-counter {
     grid-template-columns: repeat(2, 1fr);
