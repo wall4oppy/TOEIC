@@ -801,7 +801,7 @@ function importAllData(inputText) {
     showUserPanel();
 
     // 顯示成功訊息
-    showMessage("✅ 匯入完成", "匯入完成！可以在任何裝置上用相同方式匯出/匯入來同步資料。");
+    showMessage("匯入完成", "匯入完成！可以在任何裝置上用相同方式匯出/匯入來同步資料。");
   } catch (e) {
     console.error("匯入資料失敗", e);
     alert("匯入資料時發生錯誤。");

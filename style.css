@@ -161,7 +161,7 @@ a:active {
 }
 
 .user-badge::before {
-  content: "👤";
+  content: "";
   font-size: 14px;
   line-height: 1;
   display: inline-block;
