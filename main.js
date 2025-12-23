@@ -610,7 +610,7 @@ function copyExportData() {
   
   const text = exportTextOutput.value;
   if (!text) {
-    alert("沒有可複製的資料。");
+    showMessage("錯誤", "沒有可複製的資料。");
     return;
   }
 
@@ -619,16 +619,16 @@ function copyExportData() {
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        alert("資料已複製到剪貼簿！");
+        showMessage("複製成功", "資料已複製到剪貼簿！");
       })
       .catch(() => {
         // 降級方案：使用傳統方法
         exportTextOutput.select();
         try {
           document.execCommand("copy");
-          alert("資料已複製到剪貼簿！");
+          showMessage("複製成功", "資料已複製到剪貼簿！");
         } catch {
-          alert("無法自動複製，請手動選取文字並複製（Ctrl+C）。");
+          showMessage("複製失敗", "無法自動複製，請手動選取文字並複製（Ctrl+C）。");
         }
       });
   } else {
@@ -636,9 +636,9 @@ function copyExportData() {
     exportTextOutput.select();
     try {
       document.execCommand("copy");
-      alert("資料已複製到剪貼簿！");
+      showMessage("複製成功", "資料已複製到剪貼簿！");
     } catch {
-      alert("無法自動複製，請手動選取文字並複製（Ctrl+C）。");
+      showMessage("複製失敗", "無法自動複製，請手動選取文字並複製（Ctrl+C）。");
     }
   }
 }
