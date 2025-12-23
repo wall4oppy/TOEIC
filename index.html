@@ -121,6 +121,36 @@
         </div>
       </div>
 
+      <!-- 匯入資料彈窗（復古遊戲風格） -->
+      <div id="import-modal-overlay" class="modal-overlay hidden"></div>
+      <div id="import-panel" class="modal-dialog hidden">
+        <div class="modal-titlebar">
+          <span class="modal-title">📥 匯入資料</span>
+          <button id="btn-import-close" class="modal-close-btn" aria-label="關閉">✕</button>
+        </div>
+        <div class="modal-content">
+          <div class="modal-section">
+            <div class="modal-label">方式一：貼上資料文字</div>
+            <textarea id="import-text-input" class="text-area-input" placeholder="請貼上從其他裝置匯出的資料..."></textarea>
+          </div>
+          
+          <div class="modal-divider"></div>
+          
+          <div class="modal-section">
+            <div class="modal-label">方式二：選擇 .txt 檔案</div>
+            <div class="file-input-wrapper">
+              <input type="file" id="import-file-input" class="file-input" accept=".txt" />
+              <label for="import-file-input" class="btn btn-primary">選擇檔案</label>
+              <span id="import-file-name" class="file-name-display"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-import-confirm" class="btn btn-primary">確定匯入</button>
+          <button id="btn-import-cancel" class="btn">取消</button>
+        </div>
+      </div>
+
       <!-- 使用者管理彈窗（復古遊戲風格） -->
       <div id="user-modal-overlay" class="modal-overlay hidden"></div>
       <div id="user-panel" class="modal-dialog hidden">

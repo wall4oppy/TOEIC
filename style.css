@@ -741,6 +741,51 @@ a:active {
   color: #808080;
 }
 
+.text-area-input {
+  width: 100%;
+  min-height: 120px;
+  padding: 6px;
+  border: 2px inset;
+  border-color: #808080 #ffffff #ffffff #808080;
+  background: #ffffff;
+  color: #000000;
+  font-size: 12px;
+  font-family: "Courier New", Courier, monospace;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.text-area-input:focus {
+  outline: 2px dotted #000000;
+  outline-offset: 1px;
+}
+
+.text-area-input::placeholder {
+  color: #808080;
+}
+
+.file-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-name-display {
+  font-size: 12px;
+  color: #000000;
+  font-family: "Courier New", Courier, monospace;
+  padding: 4px 8px;
+  background: #ffffcc;
+  border: 2px inset;
+  border-color: #808080 #ffffff #ffffff #808080;
+  min-width: 200px;
+}
+
 /* ==== Responsive ==== */
 
 @media (max-width: 640px) {

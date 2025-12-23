@@ -538,14 +538,42 @@ function exportAllData() {
 }
 
 // 匯入所有使用者資料（用於跨裝置同步）
-function importAllData() {
+function showImportPanel() {
+  const importOverlay = $("import-modal-overlay");
+  const importPanel = $("import-panel");
+  const importTextInput = $("import-text-input");
+  const importFileInput = $("import-file-input");
+  const importFileName = $("import-file-name");
+  
+  if (importOverlay) importOverlay.classList.remove("hidden");
+  if (importPanel) importPanel.classList.remove("hidden");
+  if (importTextInput) importTextInput.value = "";
+  if (importFileInput) importFileInput.value = "";
+  if (importFileName) importFileName.textContent = "";
+  
+  // 聚焦到文字輸入框
+  if (importTextInput) {
+    setTimeout(() => importTextInput.focus(), 100);
+  }
+}
+
+function hideImportPanel() {
+  const importOverlay = $("import-modal-overlay");
+  const importPanel = $("import-panel");
+  if (importOverlay) importOverlay.classList.add("hidden");
+  if (importPanel) importPanel.classList.add("hidden");
+}
+
+function importAllData(inputText) {
   try {
-    const input = window.prompt("請貼上從其他裝置匯出的資料：");
-    if (!input) return;
+    if (!inputText || !inputText.trim()) {
+      alert("請輸入或選擇要匯入的資料。");
+      return;
+    }
 
     let snapshot;
     try {
-      snapshot = JSON.parse(input);
+      snapshot = JSON.parse(inputText);
     } catch {
       alert("資料格式不正確，請確認是否完整貼上。");
       return;
@@ -687,12 +715,14 @@ function resetPanels() {
   // 關閉所有 modal 彈窗和遮罩
   const summaryOverlay = $("summary-modal-overlay");
   const userOverlay = $("user-modal-overlay");
+  const importOverlay = $("import-modal-overlay");
   
   if (summaryPanel) summaryPanel.classList.add("hidden");
   if (summaryOverlay) summaryOverlay.classList.add("hidden");
   if (analysisPanel) analysisPanel.classList.add("hidden");
   if (userPanel) userPanel.classList.add("hidden");
   if (userOverlay) userOverlay.classList.add("hidden");
+  hideImportPanel();
   
   if (examSelector) examSelector.classList.add("hidden");
   if (feedbackBox) feedbackBox.classList.add("hidden");
@@ -1235,7 +1265,79 @@ function bindEvents() {
 
   if (btnImportData) {
     btnImportData.addEventListener("click", () => {
-      importAllData();
+      showImportPanel();
+    });
+  }
+
+  // 匯入彈窗相關事件
+  const importTextInput = $("import-text-input");
+  const importFileInput = $("import-file-input");
+  const importFileName = $("import-file-name");
+  const btnImportConfirm = $("btn-import-confirm");
+  const btnImportCancel = $("btn-import-cancel");
+  const btnImportClose = $("btn-import-close");
+  const importOverlay = $("import-modal-overlay");
+
+  // 檔案選擇事件
+  if (importFileInput) {
+    importFileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (importFileName) {
+          importFileName.textContent = file.name;
+        }
+        // 讀取檔案內容
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (importTextInput) {
+            importTextInput.value = event.target.result;
+          }
+        };
+        reader.onerror = () => {
+          alert("讀取檔案失敗，請確認檔案格式是否正確。");
+        };
+        reader.readAsText(file, "UTF-8");
+      }
+    });
+  }
+
+  // 確定匯入按鈕
+  if (btnImportConfirm) {
+    btnImportConfirm.addEventListener("click", () => {
+      const inputText = importTextInput ? importTextInput.value.trim() : "";
+      importAllData(inputText);
+    });
+  }
+
+  // 取消按鈕
+  if (btnImportCancel) {
+    btnImportCancel.addEventListener("click", () => {
+      hideImportPanel();
+    });
+  }
+
+  // 關閉按鈕
+  if (btnImportClose) {
+    btnImportClose.addEventListener("click", () => {
+      hideImportPanel();
+    });
+  }
+
+  // 點擊背景遮罩關閉匯入彈窗
+  if (importOverlay) {
+    importOverlay.addEventListener("click", (e) => {
+      if (e.target === importOverlay) {
+        hideImportPanel();
+      }
+    });
+  }
+
+  // 文字輸入框按 Enter 確認（Ctrl+Enter）
+  if (importTextInput) {
+    importTextInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && e.ctrlKey) {
+        btnImportConfirm?.click();
+      }
     });
   }
 
@@ -1284,11 +1386,14 @@ function bindEvents() {
     });
   }
 
-  // ESC 鍵關閉彈窗（支援總結和使用者彈窗）
+  // ESC 鍵關閉彈窗（支援所有彈窗）
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       // 優先關閉最上層的彈窗
-      if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
+      const importPanel = $("import-panel");
+      if (importPanel && !importPanel.classList.contains("hidden")) {
+        hideImportPanel();
+      } else if (summaryPanel && !summaryPanel.classList.contains("hidden")) {
         btnSummaryClose?.click();
       } else if (userPanel && !userPanel.classList.contains("hidden")) {
         hideUserPanel();
