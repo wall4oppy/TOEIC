@@ -27,6 +27,7 @@
           <button id="mode-all" class="btn btn-primary">全部練習</button>
           <button id="mode-exam" class="btn">單一回合</button>
           <button id="mode-review" class="btn btn-danger">答題分析</button>
+          <button id="btn-jump-part" class="btn hidden">快速跳轉Part</button>
         </div>
         
         <!-- 回合選擇器 -->
@@ -34,6 +35,13 @@
           <label class="label-text">選擇回合：</label>
           <select id="exam-select" class="select-input"></select>
           <button id="start-exam" class="btn btn-primary btn-small">開始</button>
+        </div>
+        
+        <!-- Part選擇器 -->
+        <div id="part-selector" class="exam-selector hidden">
+          <label class="label-text">選擇Part：</label>
+          <select id="part-select" class="select-input"></select>
+          <button id="start-part" class="btn btn-primary btn-small">開始</button>
         </div>
         
         <!-- 統計資訊（計數器風格） -->

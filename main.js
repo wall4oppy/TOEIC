@@ -45,6 +45,10 @@ const modeReviewBtn = $("mode-review");
 const examSelector = $("exam-selector");
 const examSelect = $("exam-select");
 const startExamBtn = $("start-exam");
+const btnJumpPart = $("btn-jump-part");
+const partSelector = $("part-selector");
+const partSelect = $("part-select");
+const startPartBtn = $("start-part");
 
 const statMode = $("stat-mode");
 const statProgress = $("stat-progress");
@@ -912,6 +916,12 @@ function startExamMode() {
   state.mode = "exam";
   setModeLabel("單一回合");
   if (examSelector) examSelector.classList.remove("hidden");
+  
+  // 顯示快速跳轉Part按鈕
+  if (btnJumpPart) btnJumpPart.classList.remove("hidden");
+  // 隱藏Part選擇器
+  if (partSelector) partSelector.classList.add("hidden");
+  
   state.perExamTotals = {};
   state.perExamWrongs = {};
   state.currentSet = [];
@@ -1394,6 +1404,63 @@ function bindEvents() {
       state.wrongQuestions = [];
       if (examSelector) examSelector.classList.add("hidden");
       showQuestionPanel();
+    });
+  }
+
+  // 快速跳轉Part按鈕
+  if (btnJumpPart) {
+    btnJumpPart.addEventListener("click", () => {
+      if (partSelector) partSelector.classList.remove("hidden");
+    });
+  }
+
+  // Part選擇
+  if (startPartBtn) {
+    startPartBtn.addEventListener("click", () => {
+      const selectedPart = partSelect.value;
+      if (!selectedPart) return;
+      
+      resetPanels();
+      clearProgress();
+      
+      let filteredQuestions = [];
+      
+      if (state.mode === "all") {
+        // 全部練習模式：顯示所有回數中該Part的題目
+        filteredQuestions = state.allQuestions.filter(
+          (q) => String(q.part) === String(selectedPart)
+        );
+        setModeLabel(`全部練習 - Part ${selectedPart}`);
+      } else if (state.mode === "exam") {
+        // 單一回合模式：顯示該單一回數中該Part的題目
+        const selectedExamId = examSelect.value;
+        if (!selectedExamId) {
+          showMessage("錯誤", "請先選擇回合。");
+          return;
+        }
+        filteredQuestions = state.allQuestions.filter(
+          (q) => String(q.examId) === String(selectedExamId) && String(q.part) === String(selectedPart)
+        );
+        setModeLabel(`單一回合 - Exam ${selectedExamId} - Part ${selectedPart}`);
+      }
+      
+      if (filteredQuestions.length === 0) {
+        showMessage("錯誤", "找不到符合條件的題目。");
+        return;
+      }
+      
+      state.currentSet = filteredQuestions;
+      state.currentIndex = 0;
+      state.wrongQuestions = [];
+      state.perExamTotals = {};
+      state.perExamWrongs = {};
+      
+      if (partSelector) partSelector.classList.add("hidden");
+      if (examSelector) examSelector.classList.add("hidden");
+      if (btnJumpPart) btnJumpPart.classList.remove("hidden");
+      
+      showQuestionPanel();
+      saveProgress();
     });
   }
 
