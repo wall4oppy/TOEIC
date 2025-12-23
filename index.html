@@ -180,6 +180,24 @@
         </div>
       </div>
 
+      <!-- 刪除使用者確認彈窗（復古遊戲風格） -->
+      <div id="delete-confirm-modal-overlay" class="modal-overlay hidden"></div>
+      <div id="delete-confirm-panel" class="modal-dialog hidden">
+        <div class="modal-titlebar">
+          <span class="modal-title">⚠️ 確認刪除</span>
+          <button id="btn-delete-confirm-close" class="modal-close-btn" aria-label="關閉">✕</button>
+        </div>
+        <div class="modal-content">
+          <div class="modal-section">
+            <div id="delete-confirm-message" class="delete-confirm-message"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-delete-confirm-ok" class="btn btn-danger">確定刪除</button>
+          <button id="btn-delete-confirm-cancel" class="btn">取消</button>
+        </div>
+      </div>
+
       <!-- 使用者管理彈窗（復古遊戲風格） -->
       <div id="user-modal-overlay" class="modal-overlay hidden"></div>
       <div id="user-panel" class="modal-dialog hidden">

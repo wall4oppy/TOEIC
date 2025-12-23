@@ -157,20 +157,49 @@ function addUser(name) {
   switchUser(newUser.id);
 }
 
-function deleteUser(userId) {
+// 顯示刪除確認彈窗
+function showDeleteConfirm(userId) {
   if (state.users.length <= 1) {
     alert("至少需要保留一個使用者");
     return;
   }
-  if (!confirm("確定要刪除此使用者嗎？此操作會刪除該使用者的所有學習記錄，無法復原。")) {
-    return;
+  
+  const user = state.users.find((u) => u.id === userId);
+  if (!user) return;
+  
+  const deleteOverlay = $("delete-confirm-modal-overlay");
+  const deletePanel = $("delete-confirm-panel");
+  const deleteMessage = $("delete-confirm-message");
+  
+  if (deleteMessage) {
+    deleteMessage.textContent = `確定要刪除使用者「${user.name}」嗎？此操作會刪除該使用者的所有學習記錄，無法復原。`;
   }
+  
+  // 儲存要刪除的使用者 ID
+  deletePanel.dataset.userIdToDelete = userId;
+  
+  if (deleteOverlay) deleteOverlay.classList.remove("hidden");
+  if (deletePanel) deletePanel.classList.remove("hidden");
+}
+
+// 隱藏刪除確認彈窗
+function hideDeleteConfirm() {
+  const deleteOverlay = $("delete-confirm-modal-overlay");
+  const deletePanel = $("delete-confirm-panel");
+  if (deleteOverlay) deleteOverlay.classList.add("hidden");
+  if (deletePanel) deletePanel.classList.add("hidden");
+}
+
+// 執行刪除使用者
+function deleteUser(userId) {
   // 刪除使用者的所有資料
   const userKeys = [
     getUserStorageKey(userId, "wrong_questions"),
     getUserStorageKey(userId, "exam_stats"),
   ];
+  const progressKey = getProgressStorageKey(userId);
   userKeys.forEach((key) => localStorage.removeItem(key));
+  localStorage.removeItem(progressKey);
 
   // 從列表中移除
   state.users = state.users.filter((u) => u.id !== userId);
@@ -185,6 +214,7 @@ function deleteUser(userId) {
     }
   }
   renderUserList();
+  hideDeleteConfirm();
 }
 
 function switchUser(userId) {
@@ -222,7 +252,7 @@ function renderUserList() {
           <span class="user-name">${user.name}</span>
           <div class="user-item-actions">
             ${!isCurrent ? `<button class="btn tiny" onclick="switchUser('${user.id}')">切換</button>` : ""}
-            ${state.users.length > 1 ? `<button class="btn tiny danger" onclick="deleteUser('${user.id}')">刪除</button>` : ""}
+            ${state.users.length > 1 ? `<button class="btn tiny danger" onclick="showDeleteConfirm('${user.id}')">刪除</button>` : ""}
           </div>
         </div>
       `;
@@ -797,6 +827,7 @@ function resetPanels() {
   if (userOverlay) userOverlay.classList.add("hidden");
   hideImportPanel();
   hideExportPanel();
+  hideDeleteConfirm();
   
   if (examSelector) examSelector.classList.add("hidden");
   if (feedbackBox) feedbackBox.classList.add("hidden");
@@ -1538,7 +1569,7 @@ function bindEvents() {
 
   // 將函數暴露到全域，讓 HTML 中的 onclick 可以呼叫
   window.switchUser = switchUser;
-  window.deleteUser = deleteUser;
+  window.showDeleteConfirm = showDeleteConfirm;
 }
 
 // 初始化
