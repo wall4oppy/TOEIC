@@ -1401,12 +1401,16 @@ function bindEvents() {
   if (btnExportClose) {
     btnExportClose.addEventListener("click", () => {
       hideExportPanel();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
     });
   }
 
   if (btnExportCloseFooter) {
     btnExportCloseFooter.addEventListener("click", () => {
       hideExportPanel();
+      // 關閉後重新顯示使用者管理彈窗
+      showUserPanel();
     });
   }
 
@@ -1415,6 +1419,8 @@ function bindEvents() {
     exportOverlay.addEventListener("click", (e) => {
       if (e.target === exportOverlay) {
         hideExportPanel();
+        // 關閉後重新顯示使用者管理彈窗
+        showUserPanel();
       }
     });
   }
