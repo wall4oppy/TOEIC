@@ -1321,6 +1321,21 @@ async function init() {
       });
     }
 
+    // 取得所有 part，填入Part下拉選單
+    const parts = Array.from(
+      new Set(state.allQuestions.map((q) => q.part).filter(Boolean))
+    ).sort((a, b) => Number(a) - Number(b));
+
+    if (partSelect) {
+      partSelect.innerHTML = "";
+      parts.forEach((part) => {
+        const opt = document.createElement("option");
+        opt.value = part;
+        opt.textContent = `Part ${part}`;
+        partSelect.appendChild(opt);
+      });
+    }
+
     // 題庫載入完成後，再載入進度（需要題庫才能恢復題目）
     if (state.currentUserId) {
       loadProgress();
