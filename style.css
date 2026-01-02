@@ -96,7 +96,7 @@ a:active {
   object-fit: contain;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
-  margin-left: 8px;
+  margin: 4px 8px;
 }
 
 .window-title {
