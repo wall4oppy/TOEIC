@@ -89,17 +89,14 @@ a:active {
 }
 
 .title-logo {
-  margin-left: 4px;
-}
-
-.title-logo {
   width: auto;
-  height: 13px;
+  height: 11px;
   display: block;
   flex-shrink: 0;
   object-fit: contain;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
+  margin-left: 8px;
 }
 
 .window-title {
